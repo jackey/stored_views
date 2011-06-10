@@ -1,6 +1,31 @@
 <?php
 
 /**
+ * Implements hook_views_handlers().
+ */
+function stored_views_views_handlers() {
+  return array(
+    'info' => array(
+      'path' => drupal_get_path('module', 'stored_views') .'/views',
+    ),
+    'handlers' => array(
+      'stored_views_views_handler_field_title' => array(
+        'parent' => 'views_handler_field',
+      ),
+      'stored_views_views_handler_field_path' => array(
+        'parent' => 'views_handler_field',
+      ),
+      'stored_views_views_handler_field_preview' => array(
+        'parent' => 'views_handler_field',
+      ),
+      'stored_views_views_handler_field_link_delete' => array(
+        'parent' => 'views_handler_field',
+      ),
+    ),
+  );
+}
+
+/**
  * Implementation of hook_views_data().
  */
 function stored_views_views_data() {
@@ -105,45 +130,19 @@ function stored_views_views_data() {
     ),
   );
   $data['stored_views']['preview'] = array(
+    'title' => t('Preview'),
+    'help' => t('Pick a display of the view for rendering a preview of it.'),
     'field' => array(
-      'title' => t('Preview'),
-      'help' => t('Pick a display of the view for rendering a preview of it.'),
       'handler' => 'stored_views_views_handler_field_preview',
     ),
   );
   $data['stored_views']['link_delete'] = array(
+    'title' => t('Delete link'),
+    'help' => t('Provide a link to delete a stored view.'),
     'field' => array(
-      'title' => t('Delete link'),
-      'help' => t('Provide a link to delete a stored view.'),
       'handler' => 'stored_views_views_handler_field_link_delete',
     ),
   );
 
   return $data;
-}
-
-/**
- * Implementation of hook_views_handlers().
- */
-function stored_views_views_handlers() {
-  return array(
-    'info' => array(
-      'path' => drupal_get_path('module', 'stored_views') .'/views',
-    ),
-    'handlers' => array(
-      // field handlers
-      'stored_views_views_handler_field_title' => array(
-        'parent' => 'views_handler_field',
-      ),
-      'stored_views_views_handler_field_path' => array(
-        'parent' => 'views_handler_field',
-      ),
-      'stored_views_views_handler_field_preview' => array(
-        'parent' => 'views_handler_field',
-      ),
-      'stored_views_views_handler_field_link_delete' => array(
-        'parent' => 'views_handler_field',
-      ),
-    ),
-  );
 }

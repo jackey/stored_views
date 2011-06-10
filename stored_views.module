@@ -27,44 +27,28 @@ function stored_views_perm() {
  */
 function stored_views_views_api() {
   return array(
-    'api' => '2.0',
+    'api' => '3.0-alpha1',
     'path' => drupal_get_path('module', 'stored_views') .'/views',
   );
 }
 
 /**
- * Implementation of hook_block().
+ * Implementation of hook_block_info
  */
-function stored_views_block($op = 'list', $delta = 0) {
-  switch ($op) {
-    case 'list':
-      $blocks = array();
-      $blocks['save']['info'] = t('Save current view block');
-      $blocks['save']['cache'] = BLOCK_CACHE_GLOBAL;
-      return $blocks;
-    case 'view':
-      if ($delta == 'save') {
-         return _stored_views_block_save();
-      }
+function stored_views_block_info() {
+  $blocks = array();
+  $blocks['save']['info'] = t('Save current view block');
+  $blocks['save']['cache'] = DRUPAL_CACHE_GLOBAL;
+  return $blocks;
+}
+
+/**
+ * Imeplementation of hook_block_view
+ */
+function stored_views_block_view($delta = '') {
+  if ($delta == 'save') {
+    return _stored_views_block_save();
   }
-}
-
-/**
- * Implementation of hook_theme().
- */
-function stored_views_theme() {
-  return array(
-    'stored_views_form' => array(
-      'arguments' => array('form' => array()),
-    )
-  );
-}
-
-/**
- * Theme function for stored_views_form().
- */
-function theme_stored_views_form($form) {
-  return drupal_render($form);
 }
 
 /**
@@ -119,7 +103,7 @@ function stored_views_form_submit($form, &$form_state) {
       $query[] = "$k=$v";
     }
   }
-  drupal_goto($_GET['q'], implode('&', $query));
+  drupal_goto($_GET['q'], array('query', $query));
 }
 
 /**
@@ -179,8 +163,9 @@ function stored_views_save($save) {
  *   )
  */
 function stored_views_load($load) {
-  $load = db_fetch_array(db_query('SELECT * FROM {stored_views} WHERE view = "%s" AND path = "%s" AND arguments = "%s" AND filters = "%s"',
-    $load['view'], $load['path'], serialize($load['arguments']), serialize($load['filters'])));
+  $conditions = db_and()->condition('view', $load['view'])->condition('path', $load['path'])->condition('arguments', serialize($load['arguments']))->condition('filters', serialize($load['filters']));
+  $load = db_select('stored_views')->condition($conditions);
+  return;
   if ($load) {
     $load['arguments'] = unserialize($load['arguments']);
     $load['filters'] = unserialize($load['filters']);
@@ -197,7 +182,7 @@ function stored_views_load($load) {
  */
 function stored_views_id_load($id) {
   if (is_numeric($id)) {
-    $load = db_fetch_array(db_query('SELECT * FROM {stored_views} WHERE id = %d', $id));
+    //$load = db_select('stored_views', 'sv')->condition('id' , $id)->execute()->fetchAssoc();
     if ($load) {
       $load['arguments'] = unserialize($load['arguments']);
       $load['filters'] = unserialize($load['filters']);
@@ -220,8 +205,7 @@ function stored_views_id_load($id) {
  *   )
  */
 function stored_views_delete($delete) {
-  db_query('DELETE FROM {stored_views} WHERE view = "%s" AND path = "%s" AND arguments = "%s" AND filters = "%s"',
-    $delete['view'], $delete['path'], serialize($delete['arguments']), serialize($delete['filters']));
+  db_delete('stored_views')->condition(db_and()->condition('view', $delete['view'])->condition('path', $delete['path'])->condition('arguments', serialize($delete['arguments']))->condition('filters', serialize($delete['filters'])));
 }
 
 /**

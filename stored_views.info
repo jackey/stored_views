@@ -1,4 +1,11 @@
 name = Stored views
 description = Save a view and its arguments for later display.
 dependencies[] = views
-core = 6.x
+core = 7.x
+
+files[] = views/stored_views.views.inc
+files[] = views/stored_views.views_default.inc
+files[] = views/stored_views_views_handler_field_title.inc
+files[] = views/stored_views_views_handler_field_preview.inc
+files[] = views/stored_views_views_handler_field_path.inc
+files[] = views/stored_views_views_handler_field_link_delete.inc

@@ -74,36 +74,3 @@ function stored_views_schema() {
   );
   return $schema;
 }
-
-/**
- * Implementation of hook_install().
- */
-function stored_views_install() {
-  // Create tables.
-  drupal_install_schema('stored_views');
-}
-
-/**
- * Implementation of hook_uninstall().
- */
-function stored_views_uninstall() {
-  // Remove tables.
-  drupal_uninstall_schema('stored_views');
-}
-
-/**
- * Add status col.
- */
-function stored_views_update_6001() {
-  $ret = array();
-  $spec = array( 
-    'type' => 'int',
-    'unsigned' => TRUE,
-    'not null' => TRUE,
-    'default' => 0,
-    'description' => 'Status (promoted, not promoted).',
-  );
-  db_add_field($ret, 'stored_views', 'status', $spec);
-  db_add_index($ret, 'stored_views', 'status', array('status'));
-  return $ret;
-}
