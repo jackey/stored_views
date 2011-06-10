@@ -164,8 +164,7 @@ function stored_views_save($save) {
  */
 function stored_views_load($load) {
   $conditions = db_and()->condition('view', $load['view'])->condition('path', $load['path'])->condition('arguments', serialize($load['arguments']))->condition('filters', serialize($load['filters']));
-  $load = db_select('stored_views')->condition($conditions);
-  return;
+  $load = db_select('stored_views')->condition($conditions)->fields('stored_views')->execute()->fetchAssoc();
   if ($load) {
     $load['arguments'] = unserialize($load['arguments']);
     $load['filters'] = unserialize($load['filters']);
@@ -182,7 +181,7 @@ function stored_views_load($load) {
  */
 function stored_views_id_load($id) {
   if (is_numeric($id)) {
-    //$load = db_select('stored_views', 'sv')->condition('id' , $id)->execute()->fetchAssoc();
+    $load = db_select('stored_views', 'sv')->condition('sv.id' , $id)->fields('sv')->execute()->fetchAssoc();
     if ($load) {
       $load['arguments'] = unserialize($load['arguments']);
       $load['filters'] = unserialize($load['filters']);
@@ -205,7 +204,8 @@ function stored_views_id_load($id) {
  *   )
  */
 function stored_views_delete($delete) {
-  db_delete('stored_views')->condition(db_and()->condition('view', $delete['view'])->condition('path', $delete['path'])->condition('arguments', serialize($delete['arguments']))->condition('filters', serialize($delete['filters'])));
+  db_delete('stored_views')->condition(db_and()->condition('view', $delete['view'])->condition('path', $delete['path'])->condition('arguments', serialize($delete['arguments']))->condition('filters', serialize($delete['filters'])))
+                           ->execute();
 }
 
 /**
