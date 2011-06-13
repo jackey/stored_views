@@ -143,6 +143,34 @@ function stored_views_views_data() {
       'handler' => 'stored_views_views_handler_field_link_delete',
     ),
   );
+  
+  $data['stored_views']['uid'] = array(
+    'title' => t('uid'),
+    'help' => t('The user id of added current stored views.'),
+    'field' => array(
+      'handler' => 'views_handler_field_user',
+    ),
+    'argument' => array(
+      'title' => t('uid'),
+      'handler' => 'views_handler_argument_user_uid',
+    ),
+    'filter' => array(
+      'title' => t('uid'),
+      'handler' => 'views_handler_filter_user_name',
+    ),
+    'sort' => array(
+      'handler' => 'views_handler_sort',
+    ),
+    'relationship' => array(
+      'title' => t('User'),
+      'help' => t('Relate users.'),
+      'handler' => 'views_handler_relationship',
+      'base' => 'user',
+      'base field' => 'uid',
+      'field' => 'uid',
+      'label' => t('users'),
+    ),
+  );
 
   return $data;
 }

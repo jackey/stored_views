@@ -214,6 +214,7 @@ function stored_views_delete($delete) {
 function _stored_views_get_page_view() {
   $page_view = views_get_page_view();
   if ($page_view) {
+    global $user;
     $current = array();
     $current['title'] = drupal_get_title();
     $current['view'] = $page_view->view->name;
@@ -222,6 +223,7 @@ function _stored_views_get_page_view() {
     // Leave this for now.
     $current['path'] = $_GET['q'];
     $current['arguments'] = $page_view->view->args;
+    $current['uid'] = $user->uid;
     $current['filters'] = array();
     if (!empty($page_view->exposed_input)) {
       $current['filters'] = $page_view->exposed_input;
@@ -234,6 +236,7 @@ function _stored_views_get_page_view() {
       }
     }
   }
+  drupal_alter('stored_views_stored', $current);
   return $current;
 }
 
@@ -247,5 +250,18 @@ function _stored_views_block_save() {
       'subject' => '',
       'content' => drupal_get_form('stored_views_form'),
     );
+  }
+}
+
+/**
+ * Implementation of hook_stored_views_stored_alter().
+ */
+function stored_views_stored_views_stored_alter(&$current) {
+  $key = variable_get('searchlight_facet_key', 'sl');
+  if (isset($_GET[$key])) {
+    $current['filters'][$key] = $_GET[$key];
+  }
+  if (isset($current['filters']['search']) && is_array($current['filters']['search'])) {
+      $current['filters']['search'] = reset($current['filters']['search']);
   }
 }

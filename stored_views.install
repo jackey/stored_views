@@ -13,6 +13,12 @@ function stored_views_schema() {
         'type' => 'serial',
         'unsigned' => TRUE,
         'not null' => TRUE),
+      'uid' => array(
+        'description' => 'The uid of add this stored',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'default' => 0,
+        'not null' => TRUE),
       'created' => array(
         'description' => 'The Unix timestamp when the stored view was created.',
         'type' => 'int',
